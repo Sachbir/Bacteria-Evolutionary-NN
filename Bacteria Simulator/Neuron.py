@@ -5,7 +5,7 @@ from Config import Config
 
 class Neuron:
 
-    def __init__(self, input_neurons, weights=None, bias=None):
+    def __init__(self, input_neurons, depth):
 
         self.input_neurons = []
 
@@ -14,13 +14,17 @@ class Neuron:
                                        Neuron.get_random_weight()))     # attribute a random weight
         self.bias = Neuron.get_random_weight()                          # and a random bias
 
+        self.depth = depth      # How deep into the network this is (0 = input, 1 = output)
+
     # Given an array of inputs, return an output
-    def get_output(self):
+    def get_output(self, input_values):
+
+        if self.depth == 0:
+            return          # How do we return the correct input value? Different input neurons have different inputs
 
         result = self.bias
-
         for neuron in self.input_neurons:
-            neuron_output = neuron[0].get_output()
+            neuron_output = neuron[0].get_output(input_values)
             weight = neuron[1]
             result += neuron_output * weight
 
@@ -30,7 +34,7 @@ class Neuron:
 
         return self.input_neurons
 
-    def set_inputs(self, input_neurons, weights, bias, should_vary):
+    def set_inputs(self, input_neurons, depth, weights, bias, should_vary):
 
         random_deviance = 0
         if should_vary:
@@ -39,6 +43,7 @@ class Neuron:
             self.input_neurons.append((input_neurons[i],                # For each neuron
                                        weights[i] + random_deviance))   # attribute its associated weight
         self.bias = bias + random_deviance                              # and its bias
+        self.depth = depth
 
     @staticmethod
     def get_random_weight():

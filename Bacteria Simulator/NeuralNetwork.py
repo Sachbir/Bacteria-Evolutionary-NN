@@ -10,15 +10,15 @@ class NeuralNetwork:
         self.output_neurons = []
 
         for i in range(input_neurons):
-            self.input_neurons.append(Neuron(1))
+            self.input_neurons.append(Neuron(1, 0))
         for i in range(output_neurons):
-            self.input_neurons.append(Neuron(0))
+            self.input_neurons.append(Neuron(0, 1))
 
-    def get_output(self):
+    def get_output(self, input_values):
 
         outputs = []
         for neuron in self.output_neurons:
-            outputs.append(neuron.get_output())
+            outputs.append(neuron.get_output(input_values))
 
 
 ''' Idea: Give neurons a value (eg. between 1 and 1000) and neurons can only connect in increasing order, preventing 
