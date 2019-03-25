@@ -1,20 +1,25 @@
 import pygame
 import random
 from Config import Config
+from NeuralNetwork import NeuralNetwork
 from WorldObject import WorldObject
 
 
 class Bacteria(WorldObject):
 
+    color = (0, 0, 0)
+
     base_size = 10
 
     def __init__(self):
 
-        self.size = Bacteria.base_size
-        self.color = 0, 0, 0
         self.x = random.randrange(Config.world_size[0])
         self.y = random.randrange(Config.world_size[1])
-        self.fullness = 0
+
+        self.size = Bacteria.base_size
+
+        self.brain = NeuralNetwork(2, 1)        # For now, x and y as inputs, and direction as output
+
         super().__init__(self.x, self.y)
 
     def update(self, nutrients):
@@ -24,13 +29,13 @@ class Bacteria(WorldObject):
         self.eat(nutrients)
 
         self.render()
-
+        
         return self.reproduce()
 
     def render(self):
 
         pygame.draw.circle(WorldObject.screen,
-                           self.color,
+                           Bacteria.color,
                            (round(self.x), round(self.y)),
                            self.size,
                            1)
@@ -62,5 +67,6 @@ class Bacteria(WorldObject):
 
     def reproduce(self):
 
-        if self.fullness >= 2 * Bacteria.base_size:
+        if self.size >= 2 * Bacteria.base_size:
+            self.size = Bacteria.base_size
             return True

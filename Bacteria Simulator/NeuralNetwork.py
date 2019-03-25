@@ -16,6 +16,9 @@ class NeuralNetwork:
 
     def get_output(self, input_values):
 
+        for i in range(input_values):
+            self.input_neurons[i].output = input_values[i]
+
         outputs = []
         for neuron in self.output_neurons:
             outputs.append(neuron.get_output(input_values))

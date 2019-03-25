@@ -16,6 +16,8 @@ class Neuron:
 
         self.depth = depth      # How deep into the network this is (0 = input, 1 = output)
 
+        self.output = None
+
     # Given an array of inputs, return an output
     def get_output(self, input_values):
 
