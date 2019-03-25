@@ -7,9 +7,9 @@ from Nutrient import Nutrient
 
 class World:
 
-    # pygame.init()
-    # screen = pygame.display.set_mode(Config.world_size)
-    # clock = pygame.time.Clock()
+    pygame.init()
+    screen = pygame.display.set_mode(Config.world_size)
+    clock = pygame.time.Clock()
 
     def __init__(self):
 
@@ -58,15 +58,5 @@ class World:
                 sys.exit(0)
 
 
-# world = World()
-# world.run()
-
-
-profit = 6.7                   # millions
-rate_of_return = 15*60                  # seconds
-cost_of_upgrade = 1.5        # millions
-
-ROI = cost_of_upgrade / (profit / rate_of_return)
-minutes_to_ROI = ROI / 60
-
-print("\nIt takes " + str(minutes_to_ROI) + " minutes to get your money back")
+world = World()
+world.run()

@@ -19,18 +19,22 @@ class Neuron:
         self.output = None
 
     # Given an array of inputs, return an output
-    def get_output(self, input_values):
+    def get_output(self):
 
+        if self.output is not None:
+            return self.output
         if self.depth == 0:
-            return          # How do we return the correct input value? Different input neurons have different inputs
+            return self.output
 
         result = self.bias
         for neuron in self.input_neurons:
-            neuron_output = neuron[0].get_output(input_values)
+            neuron_output = neuron[0].get_output()
             weight = neuron[1]
             result += neuron_output * weight
 
-        return Neuron.modified_sigmoid(result)
+        self.output = Neuron.modified_sigmoid(result)
+
+        return self.output
 
     def get_inputs(self):
 
