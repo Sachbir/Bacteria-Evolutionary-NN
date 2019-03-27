@@ -5,14 +5,17 @@ from Config import Config
 
 class Neuron:
 
-    def __init__(self, input_neurons, depth):
+    def __init__(self, input_neurons, depth, is_output_neuron=False):
 
         self.input_neurons = []
 
         for i in range(len(input_neurons)):
             self.input_neurons.append((input_neurons[i],                # For each neuron
                                        Neuron.get_random_weight()))     # attribute a random weight
-        self.bias = Neuron.get_random_weight()                          # and a random bias
+        if is_output_neuron:
+            self.bias = 0
+        else:
+            self.bias = Neuron.get_random_weight()                      # and a random bias
 
         self.depth = depth      # How deep into the network this is (0 = input, 1 = output)
 

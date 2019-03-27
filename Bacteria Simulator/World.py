@@ -18,11 +18,8 @@ class World:
     def run(self):
 
         bacteria = [Bacteria()]
-        nutrients = [Nutrient(),
-                     Nutrient(),
-                     Nutrient(),
-                     Nutrient(),
-                     Nutrient()]
+        nutrients = [Nutrient()
+                     for i in range(100)]
 
         while True:
             self.process_events()
@@ -35,13 +32,19 @@ class World:
                 successful_reproduction = bacteria[i].update(nutrients)
                 if successful_reproduction:
                     bacteria_that_reproduce.append(i)
-
             for i in range(len(bacteria_that_reproduce)):
                 index_of_reproducer = bacteria_that_reproduce[i]
-                del bacteria[index_of_reproducer]
-            for i in range(len(bacteria_that_reproduce)):
-                bacteria.append(Bacteria())
-                bacteria.append(Bacteria())
+                reproducer = bacteria[index_of_reproducer]
+                x = reproducer.x
+                y = reproducer.y
+                bacteria.append(Bacteria(x, y))
+                bacteria.append(Bacteria(x, y))
+            if len(bacteria_that_reproduce) > 0:
+                print(len(bacteria_that_reproduce))
+                for i in range(len(bacteria_that_reproduce) - 1, -1):
+                    print(len(bacteria_that_reproduce))
+                    index_to_delete = bacteria_that_reproduce[i]
+                    del bacteria[index_to_delete]
 
             for n in nutrients:
                 n.update()

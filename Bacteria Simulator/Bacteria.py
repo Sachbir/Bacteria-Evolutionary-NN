@@ -1,5 +1,6 @@
+from math import sqrt
 import pygame
-import random
+from random import randrange
 from Config import Config
 from NeuralNetwork import NeuralNetwork
 from WorldObject import WorldObject
@@ -9,23 +10,26 @@ class Bacteria(WorldObject):
 
     color = (0, 0, 0)
 
-    base_size = 10
+    base_size = 4
 
-    def __init__(self):
+    def __init__(self, x=0, y=0):
 
-        self.x = random.randrange(Config.world_size[0])
-        self.y = random.randrange(Config.world_size[1])
+        if x != 0:
+            self.x = x
+            self.y = y
+        else:
+            self.x = randrange(Config.world_size[0])
+            self.y = randrange(Config.world_size[1])
 
         self.size = Bacteria.base_size
 
-        self.brain = NeuralNetwork(2, 1)        # For now, x and y as inputs, and direction as output
+        self.brain = NeuralNetwork()
 
         super().__init__(self.x, self.y)
 
     def update(self, nutrients):
 
-        self.move(random.uniform(-5, 5),
-                  random.uniform(-5, 5))
+        self.move(nutrients)
         self.eat(nutrients)
 
         self.render()
@@ -36,26 +40,32 @@ class Bacteria(WorldObject):
 
         pygame.draw.circle(WorldObject.screen,
                            Bacteria.color,
-                           (round(self.x), round(self.y)),
+                           (int(round(self.x)), int(round(self.y))),
                            self.size,
                            1)
 
-    def move(self, delta_x, delta_y):
+    def get_closest_nutrient(self, nutrients):
 
-        right_border = Config.world_size[0]
-        bottom_border = Config.world_size[1]
+        closest_nutrient = (nutrients[0], self.distance_to(nutrients[0]))
 
-        self.x += delta_x
-        self.y += delta_y
+        for nutrient in nutrients:
+            distance_to_nutrient = self.distance_to(nutrient)
+            if distance_to_nutrient > closest_nutrient[1]:
+                closest_nutrient = (nutrient, distance_to_nutrient)
 
-        if self.x < 0:
-            self.x = 0
-        elif self.x > right_border:
-            self.x = right_border
-        if self.y < 0:
-            self.y = 0
-        elif self.y > bottom_border:
-            self.y = bottom_border
+        return closest_nutrient[0]
+
+    def move(self, nutrients):
+
+        nutrient = self.get_closest_nutrient(nutrients)
+
+        move_x, move_y = self.brain.get_output((self.x, self.y, nutrient.x, nutrient.y))
+
+        self.x += move_x * Config.move_modifier
+        self.y += move_y * Config.move_modifier
+
+        self.x %= Config.world_size[0]
+        self.y %= Config.world_size[1]
 
     def eat(self, nutrients):
 
@@ -70,3 +80,12 @@ class Bacteria(WorldObject):
         if self.size >= 2 * Bacteria.base_size:
             self.size = Bacteria.base_size
             return True
+
+    def distance_to(self, nutrient):
+
+        delta_x = self.x - nutrient.x
+        delta_y = self.y - nutrient.y
+
+        distance_to_point = sqrt(delta_x ** 2 + delta_y ** 2)
+
+        return distance_to_point

@@ -6,7 +6,7 @@ from WorldObject import WorldObject
 
 class Nutrient(WorldObject):
 
-    radius = 30
+    radius = 2
 
     def __init__(self):
 
