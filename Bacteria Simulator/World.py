@@ -13,7 +13,7 @@ class World:
 
     def __init__(self):
 
-        print("\n---INITIALIZE---")
+        print("\n---INITIALIZE---\n")
 
     def run(self):
 
@@ -26,27 +26,12 @@ class World:
 
             World.screen.fill(Config.background_color)  # Off-white
 
-            bacteria_that_reproduce = []
-
-            for i in range(len(bacteria)):
-                successful_reproduction = bacteria[i].update(nutrients)
-                if successful_reproduction:
-                    bacteria_that_reproduce.append(i)
-
-            for i in range(len(bacteria_that_reproduce)):
-                index_of_reproducer = bacteria_that_reproduce[i]
-                reproducer = bacteria[index_of_reproducer]
-                x = reproducer.x
-                y = reproducer.y
-                bacteria.append(Bacteria(reproducer))
-                bacteria.append(Bacteria(reproducer))
-
-            if len(bacteria_that_reproduce) > 0:
-                print(len(bacteria_that_reproduce))
-                for i in range(len(bacteria_that_reproduce) - 1, -1):
-                    print(len(bacteria_that_reproduce))
-                    index_to_delete = bacteria_that_reproduce[i]
-                    del bacteria[index_to_delete]
+            for i in range(len(bacteria) - 1, -1, -1):
+                full = bacteria[i].update(nutrients)
+                if full:
+                    bacteria.append(Bacteria(bacteria[i]))
+                    bacteria.append(Bacteria(bacteria[i]))
+                    del bacteria[i]
 
             for n in nutrients:
                 n.update()

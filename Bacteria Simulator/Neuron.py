@@ -12,10 +12,10 @@ class Neuron:
         for i in range(len(input_neurons)):
             self.input_neurons.append((input_neurons[i],                # For each neuron
                                        Neuron.get_random_weight()))     # attribute a random weight
-        if is_output_neuron:
-            self.bias = 0
-        else:
-            self.bias = Neuron.get_random_weight()                      # and a random bias
+        # if is_output_neuron:
+        #     self.bias = 0
+        # else:
+        self.bias = Neuron.get_random_weight()                      # and a random bias
 
         self.depth = depth      # How deep into the network this is (0 = input, 1 = output)
 
@@ -25,8 +25,6 @@ class Neuron:
     def get_output(self):
 
         if self.output is not None:
-            return self.output
-        if self.depth == 0:
             return self.output
 
         result = self.bias
@@ -39,10 +37,6 @@ class Neuron:
 
         return self.output
 
-    def get_inputs(self):
-
-        return self.input_neurons
-
     def set_inputs(self, input_neurons, depth, weights, bias, should_vary):
 
         random_deviance = 0
@@ -54,13 +48,25 @@ class Neuron:
         self.bias = bias + random_deviance                              # and its bias
         self.depth = depth
 
+    def modify_self(self):
+
+        for neuron in self.input_neurons:
+            neuron[1] += Neuron.get_random_variance()
+        self.bias += Neuron.get_random_variance()
+        print("neuron")
+        print(self.bias)
+
+    @staticmethod
+    def get_random_variance():
+        return random.uniform(Config.neuron_weight_variance, -Config.neuron_weight_variance)
+
     @staticmethod
     def get_random_weight():
         return round(random.uniform(-1, 1), 15)
 
     @staticmethod
     def modified_sigmoid(x):
-        return 2 / (1 + numpy.exp(-x)) - 1
+        return 0.1 * (1 / (1 + numpy.exp(-x)) - 0.5)
 
 
 '''I think I should add some function to add or remove neurons. At the least, I need to make sure I'm aware of which

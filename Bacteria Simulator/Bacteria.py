@@ -29,9 +29,11 @@ class Bacteria(WorldObject):
         self.collision_box = None
         self.generate_collision_box()
 
-        # if parent:
-        # else:
-        self.brain = NeuralNetwork()
+        if parent is not None:
+            self.brain = parent.brain
+            self.brain.modify_self()
+        else:
+            self.brain = NeuralNetwork()
 
     def update(self, nutrients):
 

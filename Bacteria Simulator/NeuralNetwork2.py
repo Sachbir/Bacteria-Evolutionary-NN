@@ -1,28 +1,20 @@
-''' Idea: Give neurons a depth value between 0 and 1 in order to randomize the structure of the network'''
-''' 
-    3 kinds of evolution. In order of likelihood:
-        1) Weight tweaks
-        2) New connections
-        3) New neurons
-'''
-
-
 from Config import Config
 from Neuron import Neuron
 
 
 class NeuralNetwork:
 
-    def __init__(self):
+    def __init__(self, parent=None):
 
-        self.input_neurons = []
-        self.neurons = []
-        self.output_neurons = []
+        self.neuron_layers = None
 
-        for i in range(Config.input_neuron_count):
-            self.input_neurons.append(Neuron([], 0))
-        for i in range(Config.output_neuron_count):
-            self.output_neurons.append(Neuron([], 1, True))
+        if parent is None:
+            self.neuron_layers = [NeuronLayer
+                                  for i in range(2)]
+            return
+
+        for i in range(len(parent.neuron_layers)):
+
 
     def get_output(self, input_values):
 
