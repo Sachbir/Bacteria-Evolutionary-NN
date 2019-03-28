@@ -3,6 +3,7 @@ import pygame
 from random import randrange
 from Config import Config
 from NeuralNetwork import NeuralNetwork
+from Ocean import Ocean
 from WorldObject import WorldObject
 
 
@@ -12,37 +13,44 @@ class Bacteria(WorldObject):
 
     base_size = 4
 
-    def __init__(self, x=0, y=0):
+    def __init__(self, parent=None):
 
-        if x != 0:
-            self.x = x
-            self.y = y
+        super().__init__()
+
+        if parent is not None:
+            self.x = parent.x
+            self.y = parent.y
         else:
             self.x = randrange(Config.world_size[0])
             self.y = randrange(Config.world_size[1])
 
         self.size = Bacteria.base_size
 
-        self.brain = NeuralNetwork()
+        self.collision_box = None
+        self.generate_collision_box()
 
-        super().__init__(self.x, self.y)
+        # if parent:
+        # else:
+        self.brain = NeuralNetwork()
 
     def update(self, nutrients):
 
         self.move(nutrients)
+        self.x, self.y = Ocean.drift(self)
+        self.generate_collision_box()
+
         self.eat(nutrients)
 
-        self.render()
+        super().render(1)
         
         return self.reproduce()
 
-    def render(self):
+    def generate_collision_box(self):
 
-        pygame.draw.circle(WorldObject.screen,
-                           Bacteria.color,
-                           (int(round(self.x)), int(round(self.y))),
-                           self.size,
-                           1)
+        self.collision_box = pygame.Rect(self.x - self.size,  # left
+                                         self.y - self.size,  # top
+                                         2 * self.size,       # width
+                                         2 * self.size)       # height
 
     def get_closest_nutrient(self, nutrients):
 
@@ -64,15 +72,12 @@ class Bacteria(WorldObject):
         self.x += move_x * Config.move_modifier
         self.y += move_y * Config.move_modifier
 
-        self.x %= Config.world_size[0]
-        self.y %= Config.world_size[1]
-
     def eat(self, nutrients):
 
         for n in nutrients:
-            if n.collides_with(self):
+            if self.collides_with(n):
                 self.size += 1
-                n.destroy()
+                n.die()
                 break
 
     def reproduce(self):
@@ -89,3 +94,8 @@ class Bacteria(WorldObject):
         distance_to_point = sqrt(delta_x ** 2 + delta_y ** 2)
 
         return distance_to_point
+
+    def collides_with(self, world_object):
+
+        if self.collision_box.collidepoint(world_object.x, world_object.y):
+            return True

@@ -8,6 +8,8 @@ class Config:
     output_neuron_count = 2
     move_modifier = 4
 
+    drift_multiplier = 10
+
 
 '''
     Input:
