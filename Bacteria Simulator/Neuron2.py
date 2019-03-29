@@ -1,23 +1,20 @@
-from random import uniform
-
-
 class Neuron2:
 
-    def __init__(self, input_neurons, template=None):
+    def __init__(self, neuron_id, input_structure=None, bias=None):
 
-        self.input_structure = []
-        self.bias = None
+        self.id = neuron_id
+
+        self.input_structure = input_structure
+        self.bias = bias
+
         self.output = None
-        self.depth = 0
 
-        for i in range(len(input_neurons)):
-            self.input_structure.append((input_neurons[i],
-                                         Neuron2.random_weight()))
-        self.bias = Neuron2.random_weight()
+    def reset_output(self):
+        self.output = None
 
     def get_output(self):
 
-        if self.output != 0:
+        if self.output is not None:
             return self.output
 
         self.output = self.bias
@@ -26,6 +23,11 @@ class Neuron2:
 
         return self.output
 
-    @staticmethod
-    def random_weight():
-        return uniform(-1, 1)
+
+'''
+    Neurons' connections are decided by the neural network
+    Maybe I should move the random_weight function to 
+    NeuralNetwork2 as well. That way all the neuron has to do 
+    is what it's told to, and the network decides who connects
+    to whom in what way
+'''

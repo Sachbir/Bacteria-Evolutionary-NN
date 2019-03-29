@@ -1,42 +1,71 @@
 from Config import Config
-from Neuron import Neuron
+from Neuron2 import Neuron2
+from random import uniform
 
 
 class NeuralNetwork:
 
-    def __init__(self, parent=None):
+    def __init__(self):
 
-        self.neuron_layers = None
+        self.output_neurons = []
+        self.neurons = []           # includes inputs
+        self.input_neurons = []
 
-        if parent is None:
-            self.neuron_layers = [NeuronLayer
-                                  for i in range(2)]
-            return
+        # Create input -> output
+        # Calculate output -> input
 
-        for i in range(len(parent.neuron_layers)):
+    def set_neurons(self, genome=None):
 
+        # Has to be done input-to-output so neurons can find their inputs
+
+        for i in range(Config.input_neuron_count):
+            new_neuron = Neuron2()
+            self.input_neurons.append(new_neuron)
+
+        # TODO: Figure out the intermediary neurons based on genome
+
+        for i in range(Config.output_neuron_count):
+            new_neuron = Neuron2()
+            # Figure out neuron connections based on genome
+            # As is, it does the default action - gives the output no connections
+            self.output_neurons.append(new_neuron)
 
     def get_output(self, input_values):
 
-        for neuron in self.neurons:
-            neuron.output = None
         for neuron in self.output_neurons:
-            neuron.output = None
-
-        for i in range(len(input_values)):
+            neuron.reset_output()
+        for neuron in self.neurons:
+            neuron.reset_output()
+        for i in range(Config.input_neuron_count):
             self.input_neurons[i].output = input_values[i]
 
-        outputs = []
-        for neuron in self.output_neurons:
-            outputs.append(neuron.get_output())
+        output_values = []
 
-        return outputs
+        for i in range(len(self.output_neurons)):
+            output_values[i] = self.output_neurons[i].get_output()
 
-    def modify_self(self):
+        return output_values
 
-        # For now we can cheat because all we have are input and output neurons (not connected)
+    @staticmethod
+    def random_weight():
+        return uniform(-1, 1)
 
-        for neuron in self.input_neurons:
-            neuron.modify_self()
-        for neuron in self.output_neurons:
-            neuron.modify_self()
+
+'''
+    The network is going to read the 'genome', evolve it as it sees fit, and create neurons as such
+    Neurons should only be responsible for holding information and acting on it
+    
+    Genome
+        - construct input to output
+        - each 'gene' contains id (depth), (id : weight) pairs, and bias
+        
+        - from each 'gene', a neuron is created and assigned a depth
+        - then, that neuron is given another neuron (of a corresponding id) with an associated weight
+        - last, it is given a bias
+    
+    Alternative strategy:
+        - do a deep-copy of a neural network
+        - use a function to randomize network
+            - change values 
+'''
+# TODO: How to change values if deep-copy

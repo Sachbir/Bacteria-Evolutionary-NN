@@ -2,7 +2,7 @@ from math import sqrt
 import pygame
 from random import randrange
 from Config import Config
-from NeuralNetwork import NeuralNetwork
+from NeuralNetwork2 import NeuralNetwork2
 from Ocean import Ocean
 from WorldObject import WorldObject
 
@@ -17,6 +17,12 @@ class Bacteria(WorldObject):
 
         super().__init__()
 
+        self.x = None
+        self.y = None
+        self.size = None
+        self.collision_box = None
+        self.brain = None
+
         if parent is not None:
             self.x = parent.x
             self.y = parent.y
@@ -25,27 +31,21 @@ class Bacteria(WorldObject):
             self.y = randrange(Config.world_size[1])
 
         self.size = Bacteria.base_size
-
-        self.collision_box = None
         self.generate_collision_box()
 
+        self.brain = NeuralNetwork2()
         if parent is not None:
-            self.brain = parent.brain
-            self.brain.modify_self()
-        else:
-            self.brain = NeuralNetwork()
+            self.brain.evolve(parent.genome)
 
     def update(self, nutrients):
 
         self.move(nutrients)
-        self.x, self.y = Ocean.drift(self)
         self.generate_collision_box()
-
         self.eat(nutrients)
 
         super().render(1)
         
-        return self.reproduce()
+        return self.should_reproduce()
 
     def generate_collision_box(self):
 
@@ -53,6 +53,17 @@ class Bacteria(WorldObject):
                                          self.y - self.size,  # top
                                          2 * self.size,       # width
                                          2 * self.size)       # height
+
+    def move(self, nutrients):
+
+        nutrient = self.get_closest_nutrient(nutrients)
+
+        move_x, move_y = self.brain.get_output((self.x, self.y, nutrient.x, nutrient.y))
+
+        self.x += move_x * Config.move_modifier
+        self.y += move_y * Config.move_modifier
+
+        self.x, self.y = Ocean.drift(self)
 
     def get_closest_nutrient(self, nutrients):
 
@@ -65,15 +76,6 @@ class Bacteria(WorldObject):
 
         return closest_nutrient[0]
 
-    def move(self, nutrients):
-
-        nutrient = self.get_closest_nutrient(nutrients)
-
-        move_x, move_y = self.brain.get_output((self.x, self.y, nutrient.x, nutrient.y))
-
-        self.x += move_x * Config.move_modifier
-        self.y += move_y * Config.move_modifier
-
     def eat(self, nutrients):
 
         for n in nutrients:
@@ -82,16 +84,17 @@ class Bacteria(WorldObject):
                 n.die()
                 break
 
-    def reproduce(self):
+    def should_reproduce(self):
 
         if self.size >= 2 * Bacteria.base_size:
             self.size = Bacteria.base_size
             return True
+        return False
 
-    def distance_to(self, nutrient):
+    def distance_to(self, point):
 
-        delta_x = self.x - nutrient.x
-        delta_y = self.y - nutrient.y
+        delta_x = self.x - point.x
+        delta_y = self.y - point.y
 
         distance_to_point = sqrt(delta_x ** 2 + delta_y ** 2)
 
