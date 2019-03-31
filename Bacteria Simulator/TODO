@@ -1,0 +1,14 @@
+Idea #3 for the neural network
+
+1) Start with a network (original or inherited)
+2) Hard-copy it to children's brain (solving the cloned behavior issue
+3) Randomly vary the weight values
+    - all weight values?
+    - how much?
+    - how do we reduce this over time?
+4) Low chance of adding a new connection, either
+    a) add an extra neuron between it and its previous connection
+    b) find a neuron of a lower depth value and create a new connection
+5) Add to depth
+    - from output to input, add an input value
+    - if an existing depth value exists, assign it the larger (deeper) value

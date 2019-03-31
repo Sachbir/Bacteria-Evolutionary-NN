@@ -3,7 +3,7 @@ from Neuron2 import Neuron2
 from random import uniform
 
 
-class NeuralNetwork:
+class NeuralNetwork2:
 
     def __init__(self):
 
