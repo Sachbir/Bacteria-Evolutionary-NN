@@ -3,6 +3,7 @@ import sys
 from Bacteria import Bacteria
 from Config import Config
 from Nutrient import Nutrient
+from NeuralNetwork3 import NeuralNetwork
 
 
 class World:
