@@ -1,3 +1,12 @@
+TODO:
+    - Make a function to add/change the input neurons of a given neuron
+        - This will either
+            - add a new neuron from the existing set (with a greater depth value)
+            - add a neuron to an existing connection
+         - Do this before calculating depth values
+
+
+
 Idea #3 for the neural network
 
 1) Start with a network (original or inherited)

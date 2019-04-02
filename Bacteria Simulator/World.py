@@ -31,11 +31,10 @@ class World:
                 World.screen.fill(Config.background_color)  # Off-white
 
                 for i in range(len(bacteria) - 1, -1, -1):
-                    full = bacteria[i].update(nutrients)
+                    this_bacteria = bacteria[i]
+                    full = this_bacteria.update(nutrients)
                     if full:
-                        bacteria.append(Bacteria(bacteria[i]))
-                        bacteria.append(Bacteria(bacteria[i]))
-                        del bacteria[i]
+                        bacteria.append(this_bacteria.multiply())
 
                 for n in nutrients:
                     n.update()

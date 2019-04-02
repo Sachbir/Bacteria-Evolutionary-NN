@@ -1,9 +1,10 @@
-from math import sqrt
 import pygame
-from random import randrange
 from Config import Config
-from NeuralNetwork2 import NeuralNetwork2
+from copy import deepcopy
+from math import sqrt
+from NeuralNetwork3 import NeuralNetwork
 from Ocean import Ocean
+from random import randrange
 from WorldObject import WorldObject
 
 
@@ -33,9 +34,9 @@ class Bacteria(WorldObject):
         self.size = Bacteria.base_size
         self.generate_collision_box()
 
-        self.brain = NeuralNetwork2()
+        self.brain = NeuralNetwork()
         if parent is not None:
-            self.brain.evolve(parent.genome)
+            self.set_brain(parent.brain)
 
     def update(self, nutrients):
 
@@ -58,7 +59,7 @@ class Bacteria(WorldObject):
 
         nutrient = self.get_closest_nutrient(nutrients)
 
-        move_x, move_y = self.brain.get_output((self.x, self.y, nutrient.x, nutrient.y))
+        move_x, move_y = self.brain.get_outputs((self.x, self.y, nutrient.x, nutrient.y))
 
         self.x += move_x * Config.move_modifier
         self.y += move_y * Config.move_modifier
@@ -104,3 +105,19 @@ class Bacteria(WorldObject):
 
         if self.collision_box.collidepoint(world_object.x, world_object.y):
             return True
+
+    def get_brain(self):
+        return self.brain
+
+    def set_brain(self, parent_brain):
+
+        self.brain = deepcopy(parent_brain)
+
+    def multiply(self):
+
+        clone = Bacteria(self.brain)
+
+        self.get_brain().mutate()
+        clone.get_brain().mutate()
+
+        return clone
