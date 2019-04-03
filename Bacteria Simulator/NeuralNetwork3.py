@@ -4,8 +4,10 @@ from Neuron3 import Neuron
 
 class NeuralNetwork:
 
+    # noinspection PyUnusedLocal
     def __init__(self):
 
+        # noinspection PyUnusedLocal
         self.input_neurons = [Neuron()
                               for i in range(Config.input_neuron_count)]
         self.output_neurons = [Neuron()
@@ -24,6 +26,8 @@ class NeuralNetwork:
         outputs = []
         for neuron in self.output_neurons:
             outputs.append(neuron.get_output())
+        for neuron in self.output_neurons:
+            neuron.reset_output()
 
         return outputs
 

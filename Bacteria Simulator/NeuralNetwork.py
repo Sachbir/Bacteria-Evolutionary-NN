@@ -1,12 +1,3 @@
-''' Idea: Give neurons a depth value between 0 and 1 in order to randomize the structure of the network'''
-''' 
-    3 kinds of evolution. In order of likelihood:
-        1) Weight tweaks
-        2) New connections
-        3) New neurons
-'''
-
-
 from Config import Config
 from Neuron import Neuron
 

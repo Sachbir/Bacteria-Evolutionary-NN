@@ -1,10 +1,3 @@
-TODO:
-    - Add a way for mutations to add new connections or add new neurons
-         - Do this before calculating depth values
-    - Things are very slow, especially the sigmoid function
-
-
-
 Idea #3 for the neural network
 
 1) Start with a network (original or inherited)
@@ -18,4 +11,15 @@ Idea #3 for the neural network
     b) find a neuron of a lower depth value and create a new connection
 5) Add to depth
     - from output to input, add an input value
-    - if an existing depth value exists, assign it the larger (deeper) value
+    - if an existing depth value exists, assign it the larger (deeper) value\
+
+TODO:
+    - Add a way for mutations to add new connections or add new neurons
+         - Do this before calculating depth values
+    - Speed things up
+        - Main culprit seems to be the sigmoid function
+    - Have some sort of death mechanic
+        - Ideas
+            - If population > x, starvation onsets
+            - Bacteria are constantly starving, but there is more than an abundance of food (until too many bacteria)
+                - It'd be easier/smarter for food to be a property of the world, rather than an object within it

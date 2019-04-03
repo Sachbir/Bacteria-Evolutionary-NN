@@ -11,8 +11,8 @@ from WorldObject import WorldObject
 class Bacteria(WorldObject):
 
     color = (0, 0, 0)
-
     base_size = 4
+    max_speed = 1
 
     def __init__(self, parent=None):
 
@@ -36,7 +36,7 @@ class Bacteria(WorldObject):
 
         self.brain = NeuralNetwork()
         if parent is not None:
-            self.set_brain(parent.brain)
+            self.set_brain(parent.get_brain())
 
     def update(self, nutrients):
 
@@ -60,6 +60,9 @@ class Bacteria(WorldObject):
         nutrient = self.get_closest_nutrient(nutrients)
 
         move_x, move_y = self.brain.get_outputs((self.x, self.y, nutrient.x, nutrient.y))
+        magnitude = sqrt(move_x ** 2 + move_y ** 2)
+        if magnitude > Bacteria.max_speed:
+            move_x, move_y = Bacteria.normalize_motion(move_x, move_y)
 
         self.x += move_x * Config.move_modifier
         self.y += move_y * Config.move_modifier
@@ -87,7 +90,7 @@ class Bacteria(WorldObject):
 
     def should_reproduce(self):
 
-        if self.size >= 2 * Bacteria.base_size:
+        if self.size >= Bacteria.base_size + Config.reproduction_requirement:
             self.size = Bacteria.base_size
             return True
         return False
@@ -109,8 +112,9 @@ class Bacteria(WorldObject):
     def get_brain(self):
         return self.brain
 
+    # Saves the parent's brain as this instance's brain
+    # Must do a hard copy; this is a unique instance, not a common reference
     def set_brain(self, parent_brain):
-
         self.brain = deepcopy(parent_brain)
 
     def multiply(self):
@@ -123,3 +127,12 @@ class Bacteria(WorldObject):
         clone.get_brain().calc_depth_values()
 
         return clone
+
+    @staticmethod
+    def normalize_motion(x, y):
+
+        magnitude = sqrt(x ** 2 + y ** 2)
+        norm_x = x / magnitude
+        norm_y = y / magnitude
+
+        return norm_x, norm_y

@@ -1,14 +1,16 @@
 class Config:
 
     world_size = 400, 400
-    FPS = 600
+    FPS = 60
     background_color = 225, 225, 225
-    neuron_weight_variance = 0.0000025
+    neuron_weight_variance = 0.25
     input_neuron_count = 4
     output_neuron_count = 2
     move_modifier = 4
 
     drift_multiplier = 1
+
+    reproduction_requirement = 20
 
 
 '''

@@ -35,6 +35,16 @@ class Neuron:
     def set_output(self, output_value):
         self.output_value = output_value
 
+    def reset_output(self):
+
+        if self.output_value is None:
+            return
+
+        for neuron_weight_pair in self.neuron_weight_pair:
+            neuron_weight_pair[0].reset_output()
+
+        self.output_value = None
+
     # Determine how far from the output neuron a given neuron is
     # If a depth value was previously set, the neuron takes the largest value
     # This is used for constructing valid networks
@@ -57,6 +67,7 @@ class Neuron:
             neuron_weight_pair[0].mutate()
 
             random_deviation = uniform(-Config.neuron_weight_variance, Config.neuron_weight_variance)
+
             neuron_weight_pair[1] += random_deviation
         random_deviation = uniform(-Config.neuron_weight_variance, Config.neuron_weight_variance)
         self.bias += random_deviation
