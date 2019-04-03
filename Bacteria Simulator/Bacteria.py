@@ -115,9 +115,11 @@ class Bacteria(WorldObject):
 
     def multiply(self):
 
-        clone = Bacteria(self.brain)
+        clone = Bacteria(self)
 
         self.get_brain().mutate()
+        self.get_brain().calc_depth_values()
         clone.get_brain().mutate()
+        clone.get_brain().calc_depth_values()
 
         return clone

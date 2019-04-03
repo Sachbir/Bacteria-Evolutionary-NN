@@ -1,5 +1,6 @@
-from random import uniform
 from Config import Config
+from numpy import exp
+from random import uniform
 
 
 class Neuron:
@@ -7,10 +8,14 @@ class Neuron:
     def __init__(self):
 
         self.neuron_weight_pair = []    # Contains an input neuron, and how strongly its input should be factored in
-        self.bias = None
-        self.depth = None
+        self.bias = Neuron.get_random_weight()
+        self.depth = None               # When should this be calculated?
         self.output_value = None
         self.has_mutated = False
+
+    def add_input_neuron(self, neuron):
+        self.neuron_weight_pair.append([neuron,
+                                        Neuron.get_random_weight()])
 
     # If the output value already calculated, skip the calculation
     # Return the output value
@@ -24,6 +29,7 @@ class Neuron:
             input_neuron = neuron_weight_pair[0]
             weight = neuron_weight_pair[1]
             self.output_value += input_neuron.output_value * weight
+        self.output_value = Neuron.modified_sigmoid(self.output_value)
         return self.output_value
 
     def set_output(self, output_value):
@@ -79,3 +85,7 @@ class Neuron:
     @staticmethod
     def get_random_weight():
         return uniform(1, -1)
+
+    @staticmethod
+    def modified_sigmoid(x):
+        return 2 / (1 + exp(-x)) - 1

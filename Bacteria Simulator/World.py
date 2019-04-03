@@ -25,8 +25,8 @@ class World:
                      for i in range(100)]
 
         while True:
+            self.process_events()
             if not self.pause:
-                self.process_events()
 
                 World.screen.fill(Config.background_color)  # Off-white
 
@@ -50,7 +50,7 @@ class World:
                 print("\n------QUIT------")
                 sys.exit(0)
             if event.type == pygame.KEYDOWN and event.key == pygame.K_SPACE:
-                self.pause = True
+                self.pause = not self.pause
 
 
 world = World()
